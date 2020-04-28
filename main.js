@@ -21,7 +21,7 @@ const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3]
 
 // An array of all the arrays above
 const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5]
-const testbatch = [invalid2 , invalid1]
+const testbatch = [invalid2, invalid1]
 
 
 
@@ -44,7 +44,7 @@ const validateCred = card => {
         }
         iterator++;     //increase iterator
         accumulator += val;         //add the value of the element to the accumulator
-    }   
+    }
 
     if (accumulator % 10 === 0) {       //if accumulator modulus 10 === 0 then the card number is valid
         return true;
@@ -54,46 +54,81 @@ const validateCred = card => {
 }
 
 //create function to return the invalid credit card numbers
-const findInvalidCards = input =>{
-    let invalidCards= [];
-    for(var i=0; i<input.length; i++){
-        if(!validateCred(input[i])){
+const findInvalidCards = input => {
+    let invalidCards = [];
+    for (var i = 0; i < input.length; i++) {
+        if (!validateCred(input[i])) {
             invalidCards.push(input[i]);
-        }   
+        }
     }
     return invalidCards
 }
 
 //create function to return the all the companies that returns all the companies that have invalid cards
 //each first digit of the credit card number indicates what company hsa issued the card
-const idInvalidCardCompanies = invalidCards =>{
+const idInvalidCardCompanies = invalidCards => {
     let companies = [];
     let company = "";
-    for(var i =0; i<invalidCards.length; i++){
-        if(invalidCards[i][0]=== 3){
-            company="Amex";
-        }else if (invalidCards[i][0]=== 4){
-            company="Visa";
-        }else if (invalidCards[i][0]=== 5){
-            company="Master Card";
-        }else if (invalidCards[i][0]=== 6){
-            company="Discover";
+    for (var i = 0; i < invalidCards.length; i++) {
+        if (invalidCards[i][0] === 3) {
+            company = "Amex";
+        } else if (invalidCards[i][0] === 4) {
+            company = "Visa";
+        } else if (invalidCards[i][0] === 5) {
+            company = "Master Card";
+        } else if (invalidCards[i][0] === 6) {
+            company = "Discover";
         }
 
-        if(!companies.includes(company)){
-            companies.push(company);    
+        if (!companies.includes(company)) {
+            companies.push(company);
         }
-        
+
     }
     //return the list of companise without duplicates
-    if(!companies){
+    if (!companies) {
         return "Company not found.";
-    }else{
+    } else {
         return companies;
     }
 }
 
+//extra feature: allow the user to input the credit card number (create a function that converts a string into array)
+//  and create a function to convert the invalid card numbers into valid card numner
 
-//return the results in the corresponding elements of the indexCCC.html file
-document.getElementById('output').innerHTML = findInvalidCards(batch).join('|');    //print invalid card numbers
-document.getElementById('additional').innerHTML = idInvalidCardCompanies(findInvalidCards(batch));  //print companies that issue the cards
+//function that converts the user input into array
+const convertUserInput = userInput => {
+    let resultArray = [];
+    for (var i = 0; i < userInput.length; i++) {
+        resultArray.push(parseInt(userInput.charAt(i)));
+    }
+    return resultArray;
+}
+
+//get and validate user input
+document.getElementById("myButton").addEventListener("click", function () {
+    var input = prompt('Please insert card number');
+
+    while (isNaN(input)) {      //validated that the iput is a number
+        input = prompt('Input must be a numeric value');
+    }
+
+    while (input.length < 14 || input.length > 16)  //validate that the input has btween the indicated number of characters
+        input = prompt('Input must contain between 14 and 16 characters');
+        if (isNaN(input)) {
+            alert('Input must be a number, please retry');
+    }
+
+    //print the result on the screen by calling the two functions on the user input
+    if(validateCred(convertUserInput(input))){
+        document.getElementById('output').innerHTML = 'Your card number is valid';
+    }else{
+        document.getElementById('output').innerHTML = 'Your card number is invalid';
+    }
+});
+
+
+//print the results in the corresponding elements of the indexCCC.html file
+document.getElementById('additional').innerHTML = "the list of companise that have issued invalid cards: " +  idInvalidCardCompanies(findInvalidCards(batch));  //print companies that issue the cards
+//print the list of card numbers that are invalid from the batch of card number
+document.getElementById('additional2').innerHTML = "the list of invalid cards: " +  findInvalidCards(batch);  //print companies that issue the cards
