@@ -53,6 +53,7 @@ const validateCred = card => {
     }
 }
 
+//create function to return the invalid credit card numbers
 const findInvalidCards = input =>{
     let invalidCards= [];
     for(var i=0; i<input.length; i++){
@@ -60,7 +61,39 @@ const findInvalidCards = input =>{
             invalidCards.push(input[i]);
         }   
     }
-    return invalidCards;
+    return invalidCards
 }
 
-document.getElementById('output').innerHTML = findInvalidCards(testbatch);
+//create function to return the all the companies that returns all the companies that have invalid cards
+//each first digit of the credit card number indicates what company hsa issued the card
+const idInvalidCardCompanies = invalidCards =>{
+    let companies = [];
+    let company = "";
+    for(var i =0; i<invalidCards.length; i++){
+        if(invalidCards[i][0]=== 3){
+            company="Amex";
+        }else if (invalidCards[i][0]=== 4){
+            company="Visa";
+        }else if (invalidCards[i][0]=== 5){
+            company="Master Card";
+        }else if (invalidCards[i][0]=== 6){
+            company="Discover";
+        }
+
+        if(!companies.includes(company)){
+            companies.push(company);    
+        }
+        
+    }
+    //return the list of companise without duplicates
+    if(!companies){
+        return "Company not found.";
+    }else{
+        return companies;
+    }
+}
+
+
+//return the results in the corresponding elements of the indexCCC.html file
+document.getElementById('output').innerHTML = findInvalidCards(batch).join('|');    //print invalid card numbers
+document.getElementById('additional').innerHTML = idInvalidCardCompanies(findInvalidCards(batch));  //print companies that issue the cards
